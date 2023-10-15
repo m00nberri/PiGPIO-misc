@@ -2,6 +2,8 @@ import RPi.GPIO as GPIO
 from django.http import HttpResponse
 from django.shortcuts import redirect
 
+useablePins = {3,4,17,27,22,5,6,13,26,23,24,25,12,16}
+
 def turnOn(BCMnumber):
     GPIO.setmode(GPIO.BCM)
     GPIO.output(BCMnumber, 1)
@@ -17,11 +19,11 @@ def toggle(request, BCMnumber):
     pin = BCMnumber
     pinmode = GPIO.gpio_function(pin)
     print(f'Pin is: {pin} and its mode is {pinmode}')
-    if pinmode == 'GPIO.IN':
-        switchOut(BCMnumber)
-        turnOn(BCMnumber)
+    if pinmode == 1:
+        switchOut(pin)
+        turnOn(pin)
         return redirect('GPIOcontrol')
-    elif pinmode == 'GPIO.OUT':
+    elif pinmode == 0:
         if GPIO.input(pin):
             turnOff(pin)
             return redirect('GPIOcontrol')
@@ -30,11 +32,18 @@ def toggle(request, BCMnumber):
             return redirect('GPIOcontrol')
     else:
         return redirect('GPIOcontrol')
-    
-
 
 def switchOut(BCMnumber):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(BCMnumber,GPIO.OUT)
     GPIO.output(BCMnumber, 0)
     return
+
+def cleanpins(request):
+    GPIO.setmode(GPIO.BCM)
+    for pin in useablePins:
+        try:
+            GPIO.setup(pin, GPIO.IN)
+        except Exception as e:
+            print(f'idkwhathappun at pin: {pin} Exception: {e}')
+    return redirect('GPIOcontrol')
