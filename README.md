@@ -1,2 +1,4 @@
 # PiGPIO-misc
-A collection of GPIO practice/miscellaneous projects used with a Pi 4
+This is a collection of GPIO programs and a Django Web App for monitoring/debugging them 
+
+It's quite messy as I am using this as a general sandbox for learning and testing concepts
